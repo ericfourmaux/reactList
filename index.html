@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="ToDo App for Bell Media Interview">
+    <meta name="author" content="Eric Fourmaux">
+    <link rel="icon" href="favicon.ico">
+
+    <title>TODO</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
+
+    <!-- GOOGLE Font -->
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    <!-- LOAD REACT LIBRARIES -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Exercice React</h2>
+        <h5 style="font-size: .5em">par Eric Fourmaux</h5>
+    </div>
+
+    <div id="root"></div>
+
+    <!-- External JavaScript libraries -->
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+
+    <!-- Custom Javascript -->
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <script type="text/babel">
+
+        class TaskForm extends React.Component {
+            constructor() {
+                super();
+
+                this.styles = {
+                    fontFamily: 'Raleway',
+                    backgroundColor: '#99ccff',
+                    margin: '1.2em',
+                    padding: '.5em',
+                    fontSize: '1.2em',
+                    border: 'none',
+                    borderRadius: '5px',
+                    cursor: 'pointer'
+                };
+
+                this.state = {
+                    task: [],
+                    deletedTask: false
+                };
+
+                this.handleSubmit = this.handleSubmit.bind(this);
+                this.handleDelete = this.handleDelete.bind(this);
+            }
+
+            handleSubmit(evt) {
+                let title;
+                let desc;
+                
+                var newTask = {
+                    text: '',
+                    des: '',
+                    id: 0
+                };
+
+                evt.preventDefault();
+                var titleField = evt.target.querySelectorAll('[name="ttl"]')[0];
+                var descField = evt.target.querySelectorAll('[name="dsc"]')[0];
+
+                if (titleField.value === "") {
+                    title = "Sans titre";
+                } else {
+                    title = titleField.value;
+                }
+
+                if (descField.value === "") {
+                    desc = "Sans Description";
+                } else {
+                    desc = descField.value;
+                }
+
+                this.setState({
+                    task: this.state.task.concat({
+                        text: title,
+                        des: desc,
+                        id: (this.state.task.length + 1)
+                    }),
+                    deletedTask: this.state.deletedTask
+                });
+
+                titleField.value = "";
+                descField.value = "";
+            }
+
+            handleDelete(i) {
+                var del = {task: [], deletedTask: false};
+                this.state.task.forEach((item) => {
+                    if (task.id == i) {
+                        this.setState( { deletedTask: true });
+                    } 
+                });
+                this.setState(del);
+                taskArray.slice(this.state.task, 1);
+            }
+
+            list() {
+                return(
+                    this.state.task.map((item) => (
+                        <Task
+                            key={item.id}
+                            id={item.id}
+                            text={item.text}
+                            des={item.des}
+                            deleteHandler={this.deletedTask}
+                        />
+                    ))
+                );
+            }
+
+            render() {
+                return(
+                    <div>
+                        <div className="save" onClick={this.handleExport}>Exporter</div>
+                        <div className="addTask">
+                            <form onSubmit={ this.handleSubmit }>
+                                <input type="text" name="ttl" placeholder="Entrer un titre"></input>
+                                <input type="text" name="dsc" placeholder="Entrer une description"></input>
+                                <input type="submit" value="Ajouter" style={ this.styles }/>
+                            </form>
+                        </div>
+                        <div className="task">
+                            <ul>
+                                {this.list()}
+                            </ul>
+                        </div>
+                    </div>
+                );
+            }
+        }
+    
+//{ taskArray.map( task => <li key={ Date.now() }><Task text={this.state.task.title} des={this.state.task.des} num={this.state.task.key}/></li>) }
+
+
+        //REACT Component - Task definition
+        class Task extends React.Component {
+			constructor(props) {
+                super(props);
+                
+                this.state = {
+                    s: 0,
+                    etat: "À faire",
+                    styles: "todo",
+                    disp: "dispN"
+                };
+            
+				this.handleState = this.handleState.bind(this);
+                this.handleSkip = this.handleSkip.bind(this);
+                this.handleDelete = this.handleDelete.bind(this);
+			}
+			
+			handleState() {
+				if (this.state.s == 0) {
+                    this.setState( { s: this.state.s + 1 } );
+                    this.setState( { etat: "En cours" } );
+                    this.setState( { styles: "inProgress" } );
+                } else if (this.state.s == 1) {
+                    this.setState( { s: this.state.s + 1 } );
+                    this.setState( { etat: "Prêt pour QA" });
+                    this.setState( { styles: "ready4Qa" } );
+                } else if (this.state.s == 2) {
+                    this.setState( { s: this.state.s - 2 });
+                    this.setState( { etat: "Terminé" } );
+                    this.setState( { styles: "done" } );
+                }
+
+                if (this.state.s !== 0) {
+                    this.setState( { disp: "dispN" } );
+                } else {
+                    this.setState( { disp: "dispY" } );
+                }
+			}
+
+            handleSkip() {
+                
+            }
+
+            handleDelete() {
+                taskArray.splice(this, 1);
+            }
+			
+			render() {
+				return(
+                    <div>
+                        <div className={this.state.styles}>
+                            <p className="taskTop">
+                                <span className="taskNumber">{this.props.id}</span>
+                                <span className="taskTitle">{this.props.text}</span>
+                                <span className="taskState">{this.state.etat}</span>
+                                <span onClick={this.handleSkip} className={this.state.disp}><i className="fas fa-fast-forward"></i></span>
+                                <span onClick={this.handleState} className={this.state.styles}><i className="fas fa-play"></i></span>
+                                <span onClick={this.handleDelete} className='taskDelete'><i className="far fa-times-circle"></i></span>
+                            </p>
+                        </div>
+                            <p className="taskDescription">
+                                <span>{this.props.des}</span>
+                            </p>
+					</div>
+				);
+			}
+        }
+
+        ReactDOM.render(<TaskForm />, document.getElementById('root'));
+    </script>
+
+</body>
+
+</html>
